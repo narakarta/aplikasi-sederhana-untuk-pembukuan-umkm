@@ -3,7 +3,7 @@
 const CONFIG = {
   // >>> GANTI dengan URL Web App Apps Script Anda (diakhiri /exec) <<<
   // Contoh: 'https://script.google.com/macros/s/AKfycbxxxxxxxx/exec'
-  BASE_URL: 'PASTE_URL_WEB_APP_ANDA_DI_SINI',
+  BASE_URL: 'https://script.google.com/macros/s/AKfycbz-EJa3R5RFSJ--ErNix0TOr63SoSK75qEyua6uuK19fOrMOzxrqaGnrfYuxxtuW4cxJg/exec',
 };
 
 /**
