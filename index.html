@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Buku Kas UMKM — pembukuan sederhana berbasis Google Sheets" />
+  <title>Buku Kas UMKM</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ================= LOGIN / DAFTAR ================= -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-card">
+      <div class="brand">
+        <span class="logo-mark"></span>
+        <div>
+          <h1 id="auth-brand">Buku Kas UMKM</h1>
+          <p>Pembukuan usaha berbasis Google Sheets</p>
+        </div>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="tab-login" class="active" type="button">Masuk</button>
+        <button id="tab-register" type="button">Daftar</button>
+      </div>
+
+      <form id="form-login" class="auth-form" autocomplete="off">
+        <label>Email
+          <input type="email" id="login-email" required placeholder="nama@email.com" />
+        </label>
+        <label>Kata Sandi
+          <input type="password" id="login-password" required placeholder="••••••••" />
+        </label>
+        <button type="submit" class="btn-primary" id="btn-login">MASUK</button>
+      </form>
+
+      <form id="form-register" class="auth-form hidden" autocomplete="off">
+        <label>Nama Lengkap
+          <input type="text" id="reg-nama" required placeholder="Nama pemilik usaha" />
+        </label>
+        <label>Email
+          <input type="email" id="reg-email" required placeholder="nama@email.com" />
+        </label>
+        <label>Kata Sandi
+          <input type="password" id="reg-password" required minlength="6" placeholder="Minimal 6 karakter" />
+        </label>
+        <button type="submit" class="btn-primary" id="btn-register">BUAT AKUN</button>
+        <p class="auth-note">Akun pertama Anda otomatis menjadi pemilik buku kas.</p>
+      </form>
+    </div>
+    <p class="auth-foot mono">GOOGLE SHEETS × APPS SCRIPT × GITHUB PAGES</p>
+  </div>
+
+  <!-- ================= APLIKASI ================= -->
+  <div id="app" class="app hidden">
+
+    <aside class="sidebar">
+      <div class="side-brand">
+        <span class="logo-mark"></span>
+        <div>
+          <strong id="side-brand">Buku Kas</strong>
+          <small id="side-owner">UMKM</small>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <button data-view="dashboard" class="menu-item active" type="button">
+          <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+          Dashboard
+        </button>
+        <button data-view="masuk" class="menu-item" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+          Uang Masuk
+        </button>
+        <button data-view="keluar" class="menu-item" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm5 11H7v-2h10v2z"/></svg>
+          Uang Keluar
+        </button>
+        <button data-view="laporan" class="menu-item" type="button">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+          Laporan
+        </button>
+        <button data-view="profil" class="menu-item" type="button">
+          <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.503.503 0 0 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg>
+          Pengaturan
+        </button>
+      </nav>
+
+      <div class="side-user">
+        <div class="avatar" id="user-avatar">A</div>
+        <div class="user-meta">
+          <strong id="user-name">—</strong>
+          <small id="user-email">—</small>
+        </div>
+        <button id="btn-logout" class="btn-icon" title="Keluar" type="button">
+          <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8v-2H4V5z"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <main class="content">
+
+      <!-- DASHBOARD -->
+      <section id="view-dashboard" class="view">
+        <header class="view-head">
+          <h2>Dashboard</h2>
+          <p class="muted" id="dash-period">Ringkasan keuangan usaha Anda.</p>
+        </header>
+
+        <div class="cards">
+          <div class="card">
+            <span class="card-label">Saldo Saat Ini</span>
+            <strong id="card-saldo">Rp 0</strong>
+          </div>
+          <div class="card card-in">
+            <span class="card-label">Masuk Bulan Ini</span>
+            <strong id="card-masuk">Rp 0</strong>
+            <small id="card-masuk-n"></small>
+          </div>
+          <div class="card card-out">
+            <span class="card-label">Keluar Bulan Ini</span>
+            <strong id="card-keluar">Rp 0</strong>
+            <small id="card-keluar-n"></small>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Arus Kas 6 Bulan Terakhir</h3>
+          <div id="dash-chart" class="chart"></div>
+          <div class="legend">
+            <span><i class="dot dot-in"></i> Pemasukan</span>
+            <span><i class="dot dot-out"></i> Pengeluaran</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Transaksi Terbaru</h3>
+          <div id="dash-recent"></div>
+        </div>
+      </section>
+
+      <!-- UANG MASUK -->
+      <section id="view-masuk" class="view hidden">
+        <header class="view-head">
+          <h2>Uang Masuk</h2>
+          <p class="muted">Catat semua pemasukan usaha Anda.</p>
+        </header>
+
+        <div class="panel">
+          <h3 id="form-masuk-title">Tambah Pemasukan</h3>
+          <form id="form-masuk" class="grid-form">
+            <input type="hidden" id="masuk-id" />
+            <label>Tanggal
+              <input type="date" id="masuk-tanggal" required />
+            </label>
+            <label>Kategori
+              <input list="list-masuk" id="masuk-kategori" required placeholder="Pilih atau ketik kategori" />
+              <datalist id="list-masuk"></datalist>
+            </label>
+            <label>Jumlah (Rp)
+              <input type="number" id="masuk-jumlah" min="1" step="any" required placeholder="contoh: 150000" />
+            </label>
+            <label>Metode
+              <select id="masuk-metode">
+                <option>Tunai</option>
+                <option>Transfer Bank</option>
+                <option>QRIS / E-Wallet</option>
+              </select>
+            </label>
+            <label class="span2">Keterangan
+              <input type="text" id="masuk-keterangan" placeholder="Opsional" />
+            </label>
+            <div class="form-actions">
+              <button type="submit" class="btn-primary" id="btn-masuk-submit">SIMPAN</button>
+              <button type="button" class="btn-ghost hidden" id="btn-masuk-cancel">BATAL UBAH</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h3>Riwayat Pemasukan</h3>
+          <div id="masuk-list"></div>
+        </div>
+      </section>
+
+      <!-- UANG KELUAR -->
+      <section id="view-keluar" class="view hidden">
+        <header class="view-head">
+          <h2>Uang Keluar</h2>
+          <p class="muted">Catat semua pengeluaran usaha Anda.</p>
+        </header>
+
+        <div class="panel">
+          <h3 id="form-keluar-title">Tambah Pengeluaran</h3>
+          <form id="form-keluar" class="grid-form">
+            <input type="hidden" id="keluar-id" />
+            <label>Tanggal
+              <input type="date" id="keluar-tanggal" required />
+            </label>
+            <label>Kategori
+              <input list="list-keluar" id="keluar-kategori" required placeholder="Pilih atau ketik kategori" />
+              <datalist id="list-keluar"></datalist>
+            </label>
+            <label>Jumlah (Rp)
+              <input type="number" id="keluar-jumlah" min="1" step="any" required placeholder="contoh: 50000" />
+            </label>
+            <label>Metode
+              <select id="keluar-metode">
+                <option>Tunai</option>
+                <option>Transfer Bank</option>
+                <option>QRIS / E-Wallet</option>
+              </select>
+            </label>
+            <label class="span2">Keterangan
+              <input type="text" id="keluar-keterangan" placeholder="Opsional" />
+            </label>
+            <div class="form-actions">
+              <button type="submit" class="btn-primary" id="btn-keluar-submit">SIMPAN</button>
+              <button type="button" class="btn-ghost hidden" id="btn-keluar-cancel">BATAL UBAH</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h3>Riwayat Pengeluaran</h3>
+          <div id="keluar-list"></div>
+        </div>
+      </section>
+
+      <!-- LAPORAN -->
+      <section id="view-laporan" class="view hidden">
+        <header class="view-head">
+          <h2>Laporan</h2>
+          <p class="muted">Rekap detail seluruh transaksi.</p>
+        </header>
+
+        <div class="panel">
+          <form id="form-laporan" class="filter-bar">
+            <label>Dari
+              <input type="date" id="lap-dari" />
+            </label>
+            <label>Sampai
+              <input type="date" id="lap-sampai" />
+            </label>
+            <button type="submit" class="btn-primary">TERAPKAN</button>
+            <button type="button" class="btn-ghost" id="btn-csv">UNDUH CSV</button>
+            <button type="button" class="btn-ghost" id="btn-print">CETAK</button>
+          </form>
+        </div>
+
+        <div id="laporan-empty" class="panel empty">Atur rentang tanggal lalu klik <strong>Terapkan</strong>.</div>
+
+        <div id="laporan-result" class="hidden">
+          <div class="cards" id="lap-cards"></div>
+          <div class="two-col">
+            <div class="panel">
+              <h3>Ringkasan per Bulan</h3>
+              <div id="lap-bulan"></div>
+            </div>
+            <div class="panel">
+              <h3>Ringkasan per Kategori</h3>
+              <div id="lap-kategori"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h3>Semua Transaksi</h3>
+            <div id="lap-daftar"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PENGATURAN -->
+      <section id="view-profil" class="view hidden">
+        <header class="view-head">
+          <h2>Pengaturan Profil UMKM</h2>
+          <p class="muted">Profil ini tampil di dashboard dan laporan.</p>
+        </header>
+
+        <div class="panel">
+          <form id="form-profil" class="grid-form">
+            <label class="span2">Nama Usaha
+              <input type="text" id="prof-nama_umkm" placeholder="contoh: Toko Berkah Jaya" />
+            </label>
+            <label>Nama Pemilik
+              <input type="text" id="prof-pemilik" placeholder="Nama pemilik usaha" />
+            </label>
+            <label>Nomor Telepon / WA
+              <input type="tel" id="prof-telepon" placeholder="08xx-xxxx-xxxx" />
+            </label>
+            <label class="span2">Alamat Usaha
+              <textarea id="prof-alamat" rows="2" placeholder="Alamat lengkap usaha"></textarea>
+            </label>
+            <label class="span2">Catatan Tambahan
+              <textarea id="prof-catatan" rows="3" placeholder="Tampil di bagian bawah laporan cetak"></textarea>
+            </label>
+            <div class="form-actions">
+              <button type="submit" class="btn-primary" id="btn-profil">SIMPAN PROFIL</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
